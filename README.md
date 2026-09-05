@@ -1,14 +1,6 @@
-# EMS Protocols — Text Only
 
-Native Flutter text-only EMS protocol reference app. The supplied protocol document is used only as the source for protocol wording and structure; it is not bundled or displayed by the app.
+## What's New / App Updates
 
-Protocol detail pages use a clean, scrollable serif text layout with bold section headings, paragraph spacing, preserved numbered steps, and bullet lists. Administrative PDF headers, INDEX markers, and printed page numbers are omitted from protocol detail pages.
+`lib/main.dart` reads `app_updates.json` at runtime and caches the last successful feed in SharedPreferences. The GitHub Pages build runs `tool/generate_app_updates.py` before building the web app, which starts with the curated `app_updates_seed.json` entries and adds recent Git commit subjects as app-change entries. This means future feature commits can automatically appear in What's New when the project is pushed and redeployed.
 
-## Run
-
-```powershell
-flutter pub get
-flutter run -d chrome
-```
-
-Clinical note: this app reproduces the supplied 2021 source material. Verify all protocols against current agency-approved guidance before clinical use.
+For best results, use descriptive Git commit messages such as `Add pediatric airway tool` or `Update Transfer Protocol layout` instead of generic messages such as `Upload files`.

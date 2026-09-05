@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:translator/translator.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'models/protocol.dart';
 import 'data/general.dart';
@@ -18,6 +21,7 @@ import 'data/trauma.dart';
 import 'data/obgyn.dart';
 import 'data/pediatric.dart';
 import 'data/forms.dart';
+import 'data/transfer_protocol.dart';
 
 late final List<Protocol> allProtocols = [
   ...general_protocols,
@@ -628,6 +632,36 @@ class ToolsPage extends StatelessWidget {
                       vertical: 8,
                     ),
                     leading: Icon(
+                      Icons.hearing_disabled_rounded,
+                      color: const Color(0xFF00897B),
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'ASL / Deaf Patient',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('Speak and display large, readable text.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AslDictationPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
                       Icons.translate_rounded,
                       color: const Color(0xFF00897B),
                       size: 32,
@@ -658,24 +692,144 @@ class ToolsPage extends StatelessWidget {
                       vertical: 8,
                     ),
                     leading: Icon(
-                      Icons.hearing_disabled_rounded,
-                      color: const Color(0xFF00897B),
+                      Icons.water_drop_rounded,
+                      color: const Color(0xFF1565C0),
                       size: 32,
                     ),
                     title: const Text(
-                      'ASL / Deaf Patient',
+                      'IV Drip Rate',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    subtitle: const Text('Speak and display large, readable text.'),
+                    subtitle: const Text('Calculate drops per minute from volume, time, and drop factor.'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const AslDictationPage(),
+                          builder: (_) => const IvDripRatePage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
+                      Icons.psychology_rounded,
+                      color: primary,
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'GCS Calculator',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('Calculate Eye, Verbal, and Motor scores.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const GcsCalculatorPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
+                      Icons.local_fire_department_rounded,
+                      color: const Color(0xFFEF6C00),
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'Burn Calculator',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('Estimate adult TBSA using the Rule of Nines.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BurnCalculatorPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
+                      Icons.favorite_border_rounded,
+                      color: const Color(0xFFC62828),
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'AHA Algorithms',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('2025 AHA CPR & ECC algorithms and official flowcharts.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AhaAlgorithmsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
+                      Icons.air_rounded,
+                      color: const Color(0xFF00897B),
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'Oxygen Tank Duration',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('Estimate remaining oxygen time from tank pressure and flow.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const OxygenTankDurationPage(),
                         ),
                       );
                     },
@@ -689,6 +843,570 @@ class ToolsPage extends StatelessWidget {
     );
   }
 }
+
+
+
+class AhaAlgorithm {
+  final String title;
+  final String imageUrl;
+  final String description;
+
+  const AhaAlgorithm(this.title, this.imageUrl, this.description);
+}
+
+class AhaAlgorithmsPage extends StatefulWidget {
+  const AhaAlgorithmsPage({super.key});
+
+  @override
+  State<AhaAlgorithmsPage> createState() => _AhaAlgorithmsPageState();
+}
+
+class _AhaAlgorithmsPageState extends State<AhaAlgorithmsPage>
+    with SingleTickerProviderStateMixin {
+  static const String _officialPage =
+      'https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/algorithms';
+
+  // Organized to mirror the major algorithm groupings used by the current
+  // AHA 2025 algorithm library while preserving the official algorithm names.
+  static const Map<String, List<AhaAlgorithm>> _sections = {
+    'Adult BLS': [
+      AhaAlgorithm(
+        'Adult Basic Life Support — Healthcare Professionals',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-1-Adult-BLS-Algorithm-for-Health-Care-Professionals.jpg?h=1539&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Basic Life Support Algorithm for Healthcare Professionals',
+      ),
+      AhaAlgorithm(
+        'Adult Basic Life Support — Lay Rescuers',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-2-Adult-BLS-Algorithm-for-Lay-Rescuers.jpg?h=1789&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Basic Life Support Algorithm for Lay Rescuers',
+      ),
+      AhaAlgorithm(
+        'Adult Foreign-Body Airway Obstruction',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-3-Adult-FBAO-Algorithm.jpg?h=1156&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Foreign-Body Airway Obstruction Algorithm',
+      ),
+    ],
+    'Pediatric BLS': [
+      AhaAlgorithm(
+        'Pediatric BLS — Single Rescuer',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-9-Pediatric-BLS-Algorithm-Single-Rescuer.jpg?h=1654&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Pediatric Basic Life Support Algorithm (Infants to Puberty) for Healthcare Professionals — Single Rescuer',
+      ),
+      AhaAlgorithm(
+        'Pediatric BLS — 2 or More Rescuers',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-10-Pediatric-BLS-Algorithm-2-or-more-Rescuers.jpg?h=1548&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Pediatric Basic Life Support Algorithm (Infants to Puberty) for Healthcare Professionals — 2 or More Rescuers',
+      ),
+      AhaAlgorithm(
+        'Infant FBAO',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Algorithm-BLS-Infant-FBAO.jpg?h=1377&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Infant Foreign-Body Airway Obstruction Algorithm',
+      ),
+      AhaAlgorithm(
+        'Child Foreign-Body Airway Obstruction',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Algorithm-BLS-Child-FBAO.jpg?h=1312&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Child Foreign-Body Airway Obstruction Algorithm',
+      ),
+    ],
+    'Adult ALS': [
+      AhaAlgorithm(
+        'Adult Cardiac Arrest — Circular Algorithm',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-1-Adult-Cardiac-Arrest-Circular-Algorithm.jpg?h=995&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Cardiac Arrest Circular Algorithm',
+      ),
+      AhaAlgorithm(
+        'Adult Cardiac Arrest',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-2-Adult-Cardiac-Arrest-Algorithm.jpg?h=1548&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Cardiac Arrest Algorithm',
+      ),
+      AhaAlgorithm(
+        'BLS / Universal Termination of Resuscitation Rules',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-3-BLS-Universal-Termination-of-Resuscitation-Rules.jpg?h=736&iar=0&mw=1910&sc_lang=en&w=1200',
+        'BLS/Universal Termination of Resuscitation Rules',
+      ),
+      AhaAlgorithm(
+        'ALS Termination of Resuscitation Rule',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-4-ALS-Termination-of-Resuscitation-Rule.jpg?h=789&iar=0&mw=1910&sc_lang=en&w=1200',
+        'ALS Termination of Resuscitation Rule',
+      ),
+      AhaAlgorithm(
+        'Adult Tachyarrhythmia With a Pulse',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-6-Adult-Tachyarrhythmia-With-a-Pulse-Algorithm.jpg?h=1047&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Tachyarrhythmia With a Pulse Algorithm',
+      ),
+      AhaAlgorithm(
+        'Electrical Cardioversion',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-7-Electrical-Cardioversion-Algorithm.jpg?h=2063&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Electrical Cardioversion Algorithm',
+      ),
+      AhaAlgorithm(
+        'Adult Bradycardia With a Pulse',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-8-Adult-Bradycardia-with-a-Pulse-Algorithm.jpg?h=1339&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Bradycardia With a Pulse Algorithm',
+      ),
+      AhaAlgorithm(
+        'Adult Post-Cardiac Arrest Care',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/pcac-Figure-1-Adult-PCAC-Algorithm.jpg?h=1570&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult Post–Cardiac Arrest Care Algorithm',
+      ),
+    ],
+    'Pediatric ALS': [
+      AhaAlgorithm(
+        'Pediatric Cardiac Arrest',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-2-Pediatric-Cardiac-Arrest-Algorithm-2.jpg?h=1549&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Pediatric Cardiac Arrest Algorithm',
+      ),
+      AhaAlgorithm(
+        'Pediatric Bradycardia With a Pulse',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-6-Pediatric-Bradycardia-With-a-Pulse-Algorithm.jpg?h=1709&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Pediatric Bradycardia With a Pulse Algorithm',
+      ),
+      AhaAlgorithm(
+        'Pediatric Tachyarrhythmia With a Pulse',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-7-Pediatric-Tachyarrhythmia-With-a-Pulse-Algorithm.jpg?h=1349&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Pediatric Tachyarrhythmia With a Pulse Algorithm',
+      ),
+    ],
+    'Special Situations': [
+      AhaAlgorithm(
+        'Adult and Pediatric Durable LVAD',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-4-Adult-and-Pediatric-Durable-LVAD-Algorithm.jpg?h=1047&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Adult and Pediatric Durable Left Ventricular Assist Device Algorithm',
+      ),
+      AhaAlgorithm(
+        'Cardiac Arrest in Pregnancy',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-5-Cardiac-Arrest-in-Pregnancy.jpg?h=1134&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Cardiac Arrest in Pregnancy Algorithm',
+      ),
+    ],
+    'Neonatal': [
+      AhaAlgorithm(
+        'Neonatal Resuscitation',
+        'https://cpr.heart.org/en/-/media/CPR-Images/CPR-Guidelines-2025/Algorithms/Figure-2-Neonatal-Resuscitation.jpg?h=1689&iar=0&mw=1910&sc_lang=en&w=1200',
+        'Neonatal Resuscitation Algorithm',
+      ),
+    ],
+  };
+
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _sections.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sectionNames = _sections.keys.toList(growable: false);
+
+    return Scaffold(
+      appBar: const BaxterAppBar(),
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+            child: Column(
+              children: [
+                const Text(
+                  'AHA Algorithms',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '2025 American Heart Association CPR & ECC Guidelines',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            color: isDark ? const Color(0xFF17191C) : Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              labelColor: const Color(0xFF025EFF),
+              unselectedLabelColor: isDark ? Colors.white70 : Colors.black54,
+              indicatorColor: const Color(0xFF025EFF),
+              tabs: [
+                for (final name in sectionNames) Tab(text: name),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                for (final name in sectionNames)
+                  _buildAlgorithmList(context, name, isDark),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAlgorithmList(
+    BuildContext context,
+    String sectionName,
+    bool isDark,
+  ) {
+    final algorithms = _sections[sectionName] ?? const <AhaAlgorithm>[];
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
+      children: [
+        Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 6,
+            ),
+            leading: const CircleAvatar(
+              backgroundColor: Color(0xFFC62828),
+              child: Icon(Icons.favorite_rounded, color: Colors.white),
+            ),
+            title: const Text(
+              'American Heart Association',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            subtitle: const Padding(
+              padding: EdgeInsets.only(top: 3),
+              child: Text('2025 CPR & ECC algorithm library'),
+            ),
+            trailing: const Icon(Icons.open_in_new_rounded),
+            onTap: () async {
+              await launchUrl(
+                Uri.parse(_officialPage),
+                mode: LaunchMode.externalApplication,
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 2, 4, 10),
+          child: Text(
+            sectionName,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w800,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+        ),
+        for (final algorithm in algorithms)
+          Card(
+            margin: const EdgeInsets.only(bottom: 10),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 9,
+              ),
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFFC62828),
+                child: Icon(Icons.account_tree_rounded, color: Colors.white),
+              ),
+              title: Text(
+                algorithm.title,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(algorithm.description),
+              ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AhaOfflineAlgorithmPage(algorithm: algorithm),
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+
+
+class AhaOfflineAlgorithmPage extends StatelessWidget {
+  final AhaAlgorithm algorithm;
+
+  const AhaOfflineAlgorithmPage({super.key, required this.algorithm});
+
+  static const Map<String, List<String>> _offlineSteps = {
+    'Adult Basic Life Support — Healthcare Professionals': [
+      'Verify scene safety and assess responsiveness.',
+      'Activate the emergency response system and obtain an AED/defibrillator.',
+      'Assess breathing and pulse; begin CPR when indicated.',
+      'Provide high-quality chest compressions and ventilations according to current AHA guidance.',
+      'Use the AED/defibrillator as soon as available and follow device prompts.',
+      'Continue the resuscitation sequence and reassess according to the algorithm.'
+    ],
+    'Adult Basic Life Support — Lay Rescuers': [
+      'Recognize suspected cardiac arrest and activate the emergency response system.',
+      'Begin chest compressions promptly and obtain an AED when available.',
+      'Use the AED and follow its prompts.',
+      'Continue CPR until signs of life, trained rescuers take over, or the resuscitation is otherwise terminated.'
+    ],
+    'Adult Foreign-Body Airway Obstruction': [
+      'Recognize mild versus severe foreign-body airway obstruction.',
+      'For severe obstruction in a conscious adult, use the current AHA sequence of back blows and abdominal thrusts.',
+      'If the patient becomes unresponsive, activate the emergency response system and begin CPR.',
+      'Each time the airway is opened during CPR, look for a visible object and remove it if present; do not perform blind finger sweeps.'
+    ],
+    'Pediatric BLS — Single Rescuer': [
+      'Assess responsiveness and breathing and activate the emergency response system as indicated.',
+      'Check for a pulse when appropriate for the healthcare professional algorithm.',
+      'Begin CPR when indicated and use an AED/defibrillator as soon as available.',
+      'Follow the pediatric compression, ventilation, and rhythm-assessment sequence in the current AHA algorithm.',
+      'Continue cycles of CPR and reassessment until return of circulation or termination of resuscitation.'
+    ],
+    'Pediatric BLS — 2 or More Rescuers': [
+      'Assess the child or infant and activate the emergency response system.',
+      'Assign roles and begin high-quality CPR when indicated.',
+      'Use an AED/defibrillator as soon as available.',
+      'Follow the pediatric 2-or-more-rescuer compression, ventilation, and rhythm sequence.',
+      'Continue CPR and reassessment according to the current AHA algorithm.'
+    ],
+    'Infant FBAO': [
+      'Recognize severe foreign-body airway obstruction in an infant.',
+      'Use the current AHA sequence of repeated back blows and chest thrusts.',
+      'If the infant becomes unresponsive, begin CPR and activate the emergency response system.',
+      'Remove a visible object when encountered during airway assessment; do not perform blind finger sweeps.'
+    ],
+    'Child Foreign-Body Airway Obstruction': [
+      'Recognize severe foreign-body airway obstruction in a child.',
+      'Use the current AHA sequence of back blows and abdominal thrusts.',
+      'If the child becomes unresponsive, begin CPR and activate the emergency response system.',
+      'Remove a visible object when encountered during airway assessment; do not perform blind finger sweeps.'
+    ],
+    'Adult Cardiac Arrest — Circular Algorithm': [
+      'Start with high-quality CPR and rapid rhythm assessment.',
+      'For a shockable rhythm, deliver defibrillation and resume CPR promptly.',
+      'For a nonshockable rhythm, continue CPR and address reversible causes.',
+      'Use medications and advanced airway/ventilation strategies according to the current AHA ALS algorithm.',
+      'Reassess rhythm at the appropriate intervals and continue until ROSC or termination criteria are met.'
+    ],
+    'Adult Cardiac Arrest': [
+      'Begin high-quality CPR and obtain a monitor/defibrillator.',
+      'Determine whether the rhythm is shockable or nonshockable.',
+      'Treat VF/pVT with defibrillation and continued CPR; treat asystole/PEA with CPR and appropriate medications.',
+      'Consider advanced airway and capnography when indicated.',
+      'Identify and treat reversible causes and reassess rhythm at the designated intervals.',
+      'If ROSC occurs, transition to post-cardiac-arrest care.'
+    ],
+    'BLS / Universal Termination of Resuscitation Rules': [
+      'Use the rule only when its inclusion and criteria are applicable to the resuscitation setting.',
+      'Confirm the required clinical and system-level criteria before considering termination.',
+      'If termination criteria are not met, continue resuscitation and transport/medical control actions as required.',
+      'Follow local medical direction and system policy in addition to the AHA rule.'
+    ],
+    'ALS Termination of Resuscitation Rule': [
+      'Apply the rule only to patients and systems for which the ALS termination criteria are intended.',
+      'Confirm all required clinical criteria and absence of exclusion conditions.',
+      'If criteria are not satisfied, continue resuscitation and follow medical direction.',
+      'Use local EMS policy and medical control requirements for any termination decision.'
+    ],
+    'Adult Tachyarrhythmia With a Pulse': [
+      'Assess the airway, breathing, oxygenation, circulation, and monitor the rhythm.',
+      'Determine whether the tachyarrhythmia is causing hemodynamic instability.',
+      'For unstable tachyarrhythmia, use synchronized cardioversion when indicated.',
+      'For stable patients, identify rhythm characteristics and use the appropriate medication/consultation pathway.',
+      'Reassess continuously and address underlying causes.'
+    ],
+    'Electrical Cardioversion': [
+      'Confirm the patient has a tachyarrhythmia requiring synchronized cardioversion.',
+      'Prepare the monitor/defibrillator for synchronized mode and apply appropriate pads.',
+      'Provide sedation/analgesia when appropriate and when it will not delay lifesaving therapy.',
+      'Deliver the recommended synchronized shock for the rhythm and reassess.',
+      'Escalate or repeat therapy according to the current AHA algorithm and clinical response.'
+    ],
+    'Adult Bradycardia With a Pulse': [
+      'Assess airway, breathing, oxygenation, circulation, and obtain a rhythm.',
+      'Determine whether the bradycardia is causing cardiopulmonary compromise.',
+      'Treat reversible causes and provide supportive care.',
+      'For persistent symptomatic bradycardia, follow the AHA pathway for atropine and pacing/vasoactive support as indicated.',
+      'Reassess response continuously.'
+    ],
+    'Adult Post-Cardiac Arrest Care': [
+      'After ROSC, stabilize airway, breathing, and circulation.',
+      'Optimize oxygenation and ventilation and support appropriate blood pressure/perfusion.',
+      'Obtain a 12-lead ECG and evaluate for an underlying cause.',
+      'Consider indicated coronary, neurologic, temperature-management, and seizure-related evaluation/interventions.',
+      'Continue structured post-cardiac-arrest care and reassessment.'
+    ],
+    'Pediatric Cardiac Arrest': [
+      'Begin high-quality pediatric CPR and obtain a monitor/defibrillator.',
+      'Determine whether the rhythm is shockable or nonshockable.',
+      'For VF/pVT, defibrillate and resume CPR promptly; for asystole/PEA, continue CPR and treat reversible causes.',
+      'Use weight-based medications and advanced airway/ventilation strategies according to the current AHA algorithm.',
+      'Reassess rhythm at the appropriate intervals and transition to post-arrest care after ROSC.'
+    ],
+    'Pediatric Bradycardia With a Pulse': [
+      'Assess airway, breathing, oxygenation, circulation, and obtain a rhythm.',
+      'Determine whether the bradycardia is causing cardiopulmonary compromise.',
+      'Support oxygenation/ventilation and treat the underlying cause.',
+      'If compromise persists, follow the AHA pathway for CPR, epinephrine, atropine when appropriate, and pacing when indicated.',
+      'Reassess continuously.'
+    ],
+    'Pediatric Tachyarrhythmia With a Pulse': [
+      'Assess airway, breathing, oxygenation, circulation, and rhythm.',
+      'Determine whether the tachyarrhythmia is causing cardiopulmonary compromise.',
+      'For unstable tachyarrhythmia, follow the AHA synchronized cardioversion pathway.',
+      'For stable tachyarrhythmia, identify the rhythm and follow the appropriate vagal/adenosine or consultation pathway.',
+      'Reassess response and underlying causes.'
+    ],
+    'Adult and Pediatric Durable LVAD': [
+      'Assess the patient while recognizing that usual pulse and blood-pressure findings may be unreliable with continuous-flow LVADs.',
+      'Check the LVAD controller, power source, alarms, and driveline as appropriate.',
+      'Determine whether the device is functioning and address correctable equipment or power problems.',
+      'If the patient is in cardiac arrest or severe instability, follow the AHA LVAD resuscitation pathway and local specialty guidance.',
+      'Consult the LVAD center/medical control when indicated.'
+    ],
+    'Cardiac Arrest in Pregnancy': [
+      'Begin high-quality CPR and follow the standard adult cardiac-arrest sequence.',
+      'Activate the obstetric/neonatal and resuscitation teams early.',
+      'Address reversible causes and pregnancy-specific considerations.',
+      'Perform indicated left uterine displacement and prepare for resuscitative delivery when criteria are met.',
+      'Continue coordinated maternal and neonatal resuscitation according to the current AHA algorithm.'
+    ],
+    'Neonatal Resuscitation': [
+      'Prepare for birth and perform the initial newborn assessment.',
+      'Provide routine care when the newborn is breathing effectively and has good tone.',
+      'If needed, initiate ventilation support and reassess heart rate.',
+      'Escalate respiratory support and chest compressions according to the neonatal resuscitation pathway when indicated.',
+      'Use umbilical vascular access and medications when indicated by the algorithm.',
+      'Continue reassessment and transition to post-resuscitation care.'
+    ],
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final steps = _offlineSteps[algorithm.title] ?? const <String>[];
+
+    return Scaffold(
+      appBar: const BaxterAppBar(),
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+              children: [
+                Text(
+                  algorithm.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Offline quick reference',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Key sequence',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 10),
+                        for (var i = 0; i < steps.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  radius: 13,
+                                  backgroundColor: const Color(0xFF025EFF),
+                                  child: Text(
+                                    '${i + 1}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    steps[i],
+                                    style: const TextStyle(fontSize: 16, height: 1.35),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: () async {
+                    await launchUrl(
+                      Uri.parse(algorithm.imageUrl),
+                      mode: LaunchMode.externalApplication,
+                    );
+                  },
+                  icon: const Icon(Icons.open_in_new_rounded),
+                  label: const Text('Open Official AHA Flowchart'),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'The quick reference above is available offline. The official AHA flowchart is opened from AHA online and requires an internet connection. Use current approved protocols and medical direction for patient care.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.35,
+                    color: isDark ? Colors.white60 : Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 
 class TranslatorPage extends StatefulWidget {
   const TranslatorPage({super.key});
@@ -1163,6 +1881,541 @@ class _AslDictationPageState extends State<AslDictationPage> {
   }
 }
 
+
+class GcsCalculatorPage extends StatefulWidget {
+  const GcsCalculatorPage({super.key});
+
+  @override
+  State<GcsCalculatorPage> createState() => _GcsCalculatorPageState();
+}
+
+class _GcsCalculatorPageState extends State<GcsCalculatorPage> {
+  int _eye = 4;
+  int _verbal = 5;
+  int _motor = 6;
+
+  int get _total => _eye + _verbal + _motor;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final onSurfaceVariant = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Text(
+                  'GCS Calculator',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Select the best Eye, Verbal, and Motor responses.',
+                  style: TextStyle(color: onSurfaceVariant, fontSize: 15),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 8, 18, 18),
+                    child: Column(
+                      children: [
+                        _scoreDropdown(
+                          context,
+                          label: 'Eye',
+                          value: _eye,
+                          items: const [
+                            DropdownMenuItem(value: 4, child: Text('4 — Spontaneous')),
+                            DropdownMenuItem(value: 3, child: Text('3 — To voice')),
+                            DropdownMenuItem(value: 2, child: Text('2 — To pain')),
+                            DropdownMenuItem(value: 1, child: Text('1 — None')),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) setState(() => _eye = value);
+                          },
+                        ),
+                        _scoreDropdown(
+                          context,
+                          label: 'Verbal',
+                          value: _verbal,
+                          items: const [
+                            DropdownMenuItem(value: 5, child: Text('5 — Oriented')),
+                            DropdownMenuItem(value: 4, child: Text('4 — Confused')),
+                            DropdownMenuItem(value: 3, child: Text('3 — Inappropriate words')),
+                            DropdownMenuItem(value: 2, child: Text('2 — Incomprehensible sounds')),
+                            DropdownMenuItem(value: 1, child: Text('1 — None')),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) setState(() => _verbal = value);
+                          },
+                        ),
+                        _scoreDropdown(
+                          context,
+                          label: 'Motor',
+                          value: _motor,
+                          items: const [
+                            DropdownMenuItem(value: 6, child: Text('6 — Obeys commands')),
+                            DropdownMenuItem(value: 5, child: Text('5 — Localizes pain')),
+                            DropdownMenuItem(value: 4, child: Text('4 — Withdraws from pain')),
+                            DropdownMenuItem(value: 3, child: Text('3 — Abnormal flexion')),
+                            DropdownMenuItem(value: 2, child: Text('2 — Extension')),
+                            DropdownMenuItem(value: 1, child: Text('1 — None')),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) setState(() => _motor = value);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
+                    child: Column(
+                      children: [
+                        Text(
+                          'TOTAL GCS',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: onSurfaceVariant,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$_total / 15',
+                          style: TextStyle(
+                            fontSize: 42,
+                            fontWeight: FontWeight.w800,
+                            color: primary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'E$_eye  V$_verbal  M$_motor',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _eye = 4;
+                      _verbal = 5;
+                      _motor = 6;
+                    });
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('Reset'),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'GCS scoring is provided as a reference tool. Use your clinical assessment and current approved protocols when evaluating patients.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.4,
+                    color: onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _scoreDropdown(
+    BuildContext context, {
+    required String label,
+    required int value,
+    required List<DropdownMenuItem<int>> items,
+    required ValueChanged<int?> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: DropdownButtonFormField<int>(
+        initialValue: value,
+        isExpanded: true,
+        decoration: InputDecoration(labelText: label),
+        items: items,
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+class IvDripRatePage extends StatefulWidget {
+  const IvDripRatePage({super.key});
+
+  @override
+  State<IvDripRatePage> createState() => _IvDripRatePageState();
+}
+
+class _IvDripRatePageState extends State<IvDripRatePage> {
+  final TextEditingController _volumeController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  double _dropFactor = 10;
+  String? _result;
+
+  @override
+  void dispose() {
+    _volumeController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
+
+  void _calculate() {
+    final volume = double.tryParse(_volumeController.text.trim());
+    final minutes = double.tryParse(_timeController.text.trim());
+    if (volume == null || minutes == null || volume <= 0 || minutes <= 0) {
+      setState(() => _result = null);
+      return;
+    }
+    final gttPerMin = (volume * _dropFactor / minutes).round();
+    setState(() => _result = '$gttPerMin gtt/min');
+  }
+
+  void _clear() {
+    _volumeController.clear();
+    _timeController.clear();
+    setState(() {
+      _dropFactor = 10;
+      _result = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Text('IV Drip Rate', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text('Calculate drops per minute using volume, time, and tubing drop factor.', style: TextStyle(color: muted, fontSize: 15)),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _volumeController,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: const InputDecoration(labelText: 'Volume (mL)', hintText: 'e.g. 1000'),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _timeController,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: const InputDecoration(labelText: 'Time (minutes)', hintText: 'e.g. 60'),
+                        ),
+                        const SizedBox(height: 12),
+                        DropdownButtonFormField<double>(
+                          initialValue: _dropFactor,
+                          decoration: const InputDecoration(labelText: 'Drop Factor (gtt/mL)'),
+                          items: const [
+                            DropdownMenuItem(value: 10, child: Text('10 gtt/mL')),
+                            DropdownMenuItem(value: 15, child: Text('15 gtt/mL')),
+                            DropdownMenuItem(value: 20, child: Text('20 gtt/mL')),
+                            DropdownMenuItem(value: 60, child: Text('60 gtt/mL')),
+                          ],
+                          onChanged: (value) => setState(() => _dropFactor = value ?? 10),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: _calculate,
+                            icon: const Icon(Icons.calculate_rounded),
+                            label: const Text('Calculate'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_result != null) ...[
+                  const SizedBox(height: 16),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
+                      child: Column(
+                        children: [
+                          Text('DRIP RATE', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: muted, letterSpacing: 1)),
+                          const SizedBox(height: 4),
+                          Text(_result!, style: TextStyle(fontSize: 38, fontWeight: FontWeight.w800, color: primary)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 14),
+                OutlinedButton.icon(onPressed: _clear, icon: const Icon(Icons.refresh_rounded), label: const Text('Clear')),
+                const SizedBox(height: 14),
+                Text('Enter the drop factor printed on the IV tubing. Verify the tubing set and calculated rate before administration.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: muted, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class OxygenTankDurationPage extends StatefulWidget {
+  const OxygenTankDurationPage({super.key});
+
+  @override
+  State<OxygenTankDurationPage> createState() => _OxygenTankDurationPageState();
+}
+
+class _OxygenTankDurationPageState extends State<OxygenTankDurationPage> {
+  final TextEditingController _pressureController = TextEditingController();
+  final TextEditingController _flowController = TextEditingController();
+  String _tank = 'C';
+  String? _result;
+
+  static const Map<String, double> _factors = {
+    'C': 0.16,
+    'G': 2.41,
+  };
+
+  @override
+  void dispose() {
+    _pressureController.dispose();
+    _flowController.dispose();
+    super.dispose();
+  }
+
+  void _calculate() {
+    final psi = double.tryParse(_pressureController.text.trim());
+    final lpm = double.tryParse(_flowController.text.trim());
+    if (psi == null || lpm == null || psi <= 200 || lpm <= 0) {
+      setState(() => _result = null);
+      return;
+    }
+    final minutes = ((psi - 200) * _factors[_tank]!) / lpm;
+    final wholeMinutes = minutes.floor();
+    final hours = wholeMinutes ~/ 60;
+    final remaining = wholeMinutes % 60;
+    setState(() {
+      _result = hours > 0 ? '$hours hr $remaining min' : '$remaining min';
+    });
+  }
+
+  void _clear() {
+    _pressureController.clear();
+    _flowController.clear();
+    setState(() {
+      _tank = 'C';
+      _result = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Text('Oxygen Tank Duration', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text('Estimate remaining oxygen time from cylinder size, pressure, and flow.', style: TextStyle(color: muted, fontSize: 15)),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: Column(
+                      children: [
+                        DropdownButtonFormField<String>(
+                          initialValue: _tank,
+                          decoration: const InputDecoration(labelText: 'Cylinder Size'),
+                          items: const [
+                            DropdownMenuItem(value: 'C', child: Text('C — Small')),
+                            DropdownMenuItem(value: 'G', child: Text('G — Large')),
+                          ],
+                          onChanged: (value) => setState(() => _tank = value ?? 'C'),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _pressureController,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: const InputDecoration(labelText: 'Tank Pressure (PSI)', hintText: 'e.g. 2000'),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _flowController,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: const InputDecoration(labelText: 'Flow Rate (L/min)', hintText: 'e.g. 15'),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(width: double.infinity, child: FilledButton.icon(onPressed: _calculate, icon: const Icon(Icons.calculate_rounded), label: const Text('Calculate'))),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_result != null) ...[
+                  const SizedBox(height: 16),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
+                      child: Column(
+                        children: [
+                          Text('ESTIMATED REMAINING TIME', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: muted, letterSpacing: 1)),
+                          const SizedBox(height: 4),
+                          Text(_result!, style: TextStyle(fontSize: 36, fontWeight: FontWeight.w800, color: primary)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 14),
+                OutlinedButton.icon(onPressed: _clear, icon: const Icon(Icons.refresh_rounded), label: const Text('Clear')),
+                const SizedBox(height: 14),
+                Text('Approximate estimate. This calculator uses a 200 PSI reserve and common cylinder factors; verify the actual cylinder factor and remaining pressure before relying on the result.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: muted, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BurnCalculatorPage extends StatefulWidget {
+  const BurnCalculatorPage({super.key});
+
+  @override
+  State<BurnCalculatorPage> createState() => _BurnCalculatorPageState();
+}
+
+class _BurnCalculatorPageState extends State<BurnCalculatorPage> {
+  final Map<String, bool> _selected = {
+    'Head & neck': false,
+    'Right arm': false,
+    'Left arm': false,
+    'Anterior trunk': false,
+    'Posterior trunk': false,
+    'Right leg': false,
+    'Left leg': false,
+    'Perineum': false,
+  };
+
+  static const Map<String, double> _percent = {
+    'Head & neck': 9,
+    'Right arm': 9,
+    'Left arm': 9,
+    'Anterior trunk': 18,
+    'Posterior trunk': 18,
+    'Right leg': 18,
+    'Left leg': 18,
+    'Perineum': 1,
+  };
+
+  double get _total => _selected.entries.fold(0, (sum, entry) => sum + (entry.value ? _percent[entry.key]! : 0));
+
+  void _clear() {
+    setState(() {
+      for (final key in _selected.keys) {
+        _selected[key] = false;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Text('Burn Calculator', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text('Estimate adult total body surface area (TBSA) using the Rule of Nines.', style: TextStyle(color: muted, fontSize: 15)),
+                const SizedBox(height: 16),
+                Card(
+                  child: Column(
+                    children: _selected.keys.map((region) {
+                      return CheckboxListTile(
+                        title: Text(region),
+                        secondary: Text('${_percent[region]!.toStringAsFixed(_percent[region]! % 1 == 0 ? 0 : 1)}%'),
+                        value: _selected[region],
+                        onChanged: (value) => setState(() => _selected[region] = value ?? false),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
+                    child: Column(
+                      children: [
+                        Text('ESTIMATED TBSA', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: muted, letterSpacing: 1)),
+                        const SizedBox(height: 4),
+                        Text('${_total.toStringAsFixed(0)}%', style: TextStyle(fontSize: 42, fontWeight: FontWeight.w800, color: primary)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                OutlinedButton.icon(onPressed: _clear, icon: const Icon(Icons.refresh_rounded), label: const Text('Clear')),
+                const SizedBox(height: 14),
+                Text('Adult Rule of Nines estimate. This is not a substitute for a detailed burn assessment. For pediatric patients or irregular/small burns, use the appropriate clinical method and current approved protocols.', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: muted, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class WeightConversionPage extends StatefulWidget {
   const WeightConversionPage({super.key});
 
@@ -1350,22 +2603,249 @@ class UsefulInformationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PlaceholderInfoPage(
-      title: 'Useful Information',
-      icon: Icons.info_rounded,
-      message: 'Useful EMS information will be added here.',
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Text(
+                  'Useful Information',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 10),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
+                    leading: Icon(
+                      Icons.local_shipping_rounded,
+                      color: primary,
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'Transfer Protocol',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: const Text('Baxter Health transfer order and coverage.'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TransferProtocolPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class EducationPage extends StatefulWidget {
-  const EducationPage({super.key});
+class TransferProtocolPage extends StatelessWidget {
+  const TransferProtocolPage({super.key});
+
+  Widget _scheduleColumn(
+    BuildContext context,
+    String title,
+    List<String> lines,
+  ) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 30,
+            child: Center(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          for (final line in lines)
+            SizedBox(
+              height: 34,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  line,
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.2,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bullet(BuildContext context, String text) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 1, right: 10),
+            child: Text(
+              '•',
+              style: TextStyle(fontSize: 18, color: textColor),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 14.5,
+                height: 1.45,
+                color: textColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
-  State<EducationPage> createState() => _EducationPageState();
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 110),
+              children: [
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Baxter Health',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w500,
+                            height: 1.15,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        const Text(
+                          'Transfer Order',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w500,
+                            height: 1.15,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _scheduleColumn(context, '4 ALS', transfer4Als),
+                            const SizedBox(width: 32),
+                            _scheduleColumn(context, '5 ALS', transfer5Als),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          transferBasicHours,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+                        _bullet(context, transferBullet1),
+                        _bullet(context, transferBullet2),
+                        _bullet(context, transferBullet3),
+                        _bullet(context, transferBullet4),
+                        _bullet(context, transferBullet5),
+                        const SizedBox(height: 6),
+                        Text(
+                          transferContactText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            height: 1.35,
+                            color: textColor,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            transferUpdatedDate,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _EducationPageState extends State<EducationPage> {
+class ProtocolStudyPage extends StatefulWidget {
+  const ProtocolStudyPage({super.key});
+
+  @override
+  State<ProtocolStudyPage> createState() => _ProtocolStudyPageState();
+}
+
+class _ProtocolStudyPageState extends State<ProtocolStudyPage> {
   final Random _random = Random();
   late List<_EducationQuestion> _questionPool;
   int _score = 0;
@@ -1508,12 +2988,121 @@ class _EducationPageState extends State<EducationPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStudyView(BuildContext context) {
     final question = _currentQuestion!;
     final primary = Theme.of(context).colorScheme.primary;
     final onSurfaceVariant = Theme.of(context).colorScheme.onSurfaceVariant;
 
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Protocol Review',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  question.question,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                ...List.generate(question.options.length, (i) {
+                  final isCorrect = i == question.answerIndex;
+                  final isSelected = i == _selectedIndex;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton(
+                      onPressed: () => _selectAnswer(i),
+                      style: OutlinedButton.styleFrom(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(question.options[i])),
+                          if (_answered && isCorrect)
+                            const Icon(Icons.check_circle_rounded, color: Colors.green),
+                          if (_answered && isSelected && !isCorrect)
+                            const Icon(Icons.cancel_rounded, color: Colors.red),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+                if (_answered) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _selectedIndex == question.answerIndex
+                        ? 'Correct.'
+                        : 'Review the protocol section for the correct answer.',
+                    style: TextStyle(
+                      color: _selectedIndex == question.answerIndex
+                          ? Colors.green
+                          : Theme.of(context).colorScheme.error,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Reference: ${question.reference}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _nextQuestion,
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: const Text('Next Question'),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.scoreboard_rounded, color: primary, size: 30),
+            title: const Text(
+              'Current Score',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+            subtitle: Text('$_score correct out of $_answeredCount answered'),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Education content in this prototype is based on the currently loaded 2021 protocol set. Questions are generated from the loaded protocol text and are intended for study and review; always verify against the current approved protocols before clinical use.',
+          style: TextStyle(
+            fontSize: 13,
+            color: onSurfaceVariant,
+            height: 1.4,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: const PersistentHomeButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -1521,134 +3110,7 @@ class _EducationPageState extends State<EducationPage> {
       body: Column(
         children: [
           const TopSearchBar(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.school_rounded, color: primary, size: 30),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Education',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Study the current protocol set with source-based review questions.',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: onSurfaceVariant,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Protocol Review',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          question.question,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        ...List.generate(question.options.length, (i) {
-                          final isCorrect = i == question.answerIndex;
-                          final isSelected = i == _selectedIndex;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: OutlinedButton(
-                              onPressed: () => _selectAnswer(i),
-                              style: OutlinedButton.styleFrom(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(child: Text(question.options[i])),
-                                  if (_answered && isCorrect)
-                                    const Icon(Icons.check_circle_rounded, color: Colors.green),
-                                  if (_answered && isSelected && !isCorrect)
-                                    const Icon(Icons.cancel_rounded, color: Colors.red),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                        if (_answered) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            _selectedIndex == question.answerIndex
-                                ? 'Correct.'
-                                : 'Review the protocol section for the correct answer.',
-                            style: TextStyle(
-                              color: _selectedIndex == question.answerIndex
-                                  ? Colors.green
-                                  : Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Reference: ${question.reference}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton.icon(
-                              onPressed: _nextQuestion,
-                              icon: const Icon(Icons.arrow_forward_rounded),
-                              label: const Text('Next Question'),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Card(
-                  child: ListTile(
-                    leading: Icon(Icons.scoreboard_rounded, color: primary, size: 30),
-                    title: const Text(
-                      'Current Score',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Text('$_score correct out of $_answeredCount answered'),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Education content in this prototype is based on the currently loaded 2021 protocol set. Questions are generated from the loaded protocol text and are intended for study and review; always verify against the current approved protocols before clinical use.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: onSurfaceVariant,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: _buildStudyView(context)),
         ],
       ),
     );
@@ -1675,6 +3137,132 @@ class _EducationQuestion {
     required this.answerIndex,
     required this.reference,
   });
+}
+
+class EducationPage extends StatefulWidget {
+  const EducationPage({super.key});
+
+  @override
+  State<EducationPage> createState() => _EducationPageState();
+}
+
+class _EducationPageState extends State<EducationPage> {
+  static const String _tlcUrl =
+      'https://login.healthstream.com/hstmsts/MobileLogin.aspx?ReturnUrl=%2fHSTMSTS%2fusers%2fissue.aspx%3fwa%3dwsignin1.0%26wtrealm%3dhttp%253a%252f%252fwww.healthstream.com%252fhlc%26wctx%3drm%253d0%2526id%3dpassive%26ru%3d%25252fHLC%25252fLogin%25252fLogin.aspx%25253forganizationID%25253de4b9e57c-0d7e-df11-98c2-00151729cb2f%26wct%3d2023-07-06T15%253a10%253a06Z%26wreply%3dhttps%253a%252f%252fwww.healthstream.com%252fHLC%252flogin%252flogin.aspx%26sts_OrgId%3de4b9e57c-0d7e-df11-98c2-00151729cb2f&sts_OrgId=e4b9e57c-0d7e-df11-98c2-00151729cb2f&sts_OrgNodeId=00000000-0000-0000-0000-000000000000&wtrealm=http%3a%2f%2fwww.healthstream.com%2fhlc';
+
+  Future<void> _openTlc() async {
+    final uri = Uri.parse(_tlcUrl);
+    try {
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Unable to open TLC.')));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Unable to open TLC.')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final onSurfaceVariant = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Scaffold(
+      floatingActionButton: const PersistentHomeButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: const BaxterAppBar(),
+      body: Column(
+        children: [
+          const TopSearchBar(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.school_rounded, color: primary, size: 30),
+                    const SizedBox(width: 10),
+                    const Text('Education', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Study the current protocol set or access TLC training.',
+                  style: TextStyle(fontSize: 15, color: onSurfaceVariant, height: 1.4),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(8, 12, 8, 96),
+              children: [
+                _educationCard(
+                  context,
+                  icon: Icons.school_rounded,
+                  iconColor: const Color(0xFF00695C),
+                  title: 'Study the Current Protocol',
+                  subtitle: 'Review and quiz yourself on the current protocol set.',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const ProtocolStudyPage()),
+                    );
+                  },
+                ),
+                _educationCard(
+                  context,
+                  icon: Icons.verified_user_rounded,
+                  iconColor: const Color(0xFF3949AB),
+                  title: 'TLC',
+                  subtitle: 'Access TLC training through HealthStream.',
+                  onTap: _openTlc,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _educationCard(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+          child: Row(
+            children: [
+              Icon(icon, color: iconColor, size: 34),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface)),
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class PlaceholderInfoPage extends StatelessWidget {
@@ -1853,16 +3441,142 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 }
 
-class WhatsNewPage extends StatelessWidget {
+class WhatsNewPage extends StatefulWidget {
   const WhatsNewPage({super.key});
 
   @override
+  State<WhatsNewPage> createState() => _WhatsNewPageState();
+}
+
+class _WhatsNewPageState extends State<WhatsNewPage> {
+  static const _feedKey = 'aha_updates_feed';
+  static const _appFeedKey = 'app_updates_feed';
+  static const _lastCheckedKey = 'aha_updates_last_checked';
+  static const _appLastCheckedKey = 'app_updates_last_checked';
+
+  List<Map<String, dynamic>> _updates = const [];
+  List<Map<String, dynamic>> _appUpdates = const [];
+  bool _loading = true;
+  bool _checking = false;
+  DateTime? _lastChecked;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCachedAndRefresh();
+  }
+
+  Future<void> _loadCachedAndRefresh() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cached = prefs.getString(_feedKey);
+    final appCached = prefs.getString(_appFeedKey);
+    final checked = prefs.getString(_lastCheckedKey);
+
+    if (appCached != null) {
+      try {
+        final decoded = jsonDecode(appCached);
+        if (decoded is List) {
+          _appUpdates = decoded
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+      } catch (_) {}
+    }
+
+    if (cached != null) {
+      try {
+        final decoded = jsonDecode(cached);
+        if (decoded is List) {
+          _updates = decoded
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+      } catch (_) {}
+    }
+    if (checked != null) _lastChecked = DateTime.tryParse(checked);
+    if (mounted) setState(() => _loading = false);
+    await _refreshFeed(silent: true);
+  }
+
+  Future<void> _refreshFeed({bool silent = false}) async {
+    if (_checking) return;
+    if (mounted) setState(() { _checking = true; _error = null; });
+    try {
+      final ahaUri = Uri.base.resolve('updates.json');
+      final appUri = Uri.base.resolve('app_updates.json');
+      final results = await Future.wait([
+        http.get(ahaUri).timeout(const Duration(seconds: 10)),
+        http.get(appUri).timeout(const Duration(seconds: 10)),
+      ]);
+
+      final ahaResponse = results[0];
+      final appResponse = results[1];
+      if (ahaResponse.statusCode != 200) throw Exception('AHA HTTP ${ahaResponse.statusCode}');
+      if (appResponse.statusCode != 200) throw Exception('APP HTTP ${appResponse.statusCode}');
+
+      final ahaDecoded = jsonDecode(ahaResponse.body);
+      final appDecoded = jsonDecode(appResponse.body);
+      if (ahaDecoded is! List || appDecoded is! List) {
+        throw const FormatException('Invalid update feed');
+      }
+
+      final ahaUpdates = ahaDecoded
+          .whereType<Map>()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+      final appUpdates = appDecoded
+          .whereType<Map>()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_feedKey, jsonEncode(ahaUpdates));
+      await prefs.setString(_appFeedKey, jsonEncode(appUpdates));
+      final now = DateTime.now();
+      await prefs.setString(_lastCheckedKey, now.toIso8601String());
+      await prefs.setString(_appLastCheckedKey, now.toIso8601String());
+
+      if (mounted) {
+        setState(() {
+          _updates = ahaUpdates;
+          _appUpdates = appUpdates;
+          _lastChecked = now;
+        });
+      }
+    } catch (_) {
+      if (!silent && mounted) {
+        setState(() => _error = 'Unable to check for online updates. Showing the last saved update feed.');
+      }
+    } finally {
+      if (mounted) setState(() => _checking = false);
+    }
+  }
+
+  Future<void> _openUpdate(String? url) async {
+    if (url == null || url.isEmpty) return;
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final scheme = Theme.of(context).colorScheme;
+    final onSurface = scheme.onSurface;
+    final sourceUpdates = _updates.where((u) => u['source'] == 'AHA').toList();
 
     return Scaffold(
-      appBar: const BaxterAppBar(),
+      appBar: BaxterAppBar(
+        actions: [
+          IconButton(
+            tooltip: 'Check for updates',
+            onPressed: _checking ? null : () => _refreshFeed(),
+            icon: _checking
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                : const Icon(Icons.refresh_rounded),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           const TopSearchBar(),
@@ -1870,132 +3584,201 @@ class WhatsNewPage extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               children: [
-                Text(
-                  "What's New",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: onSurface,
-                  ),
-                ),
+                Text("What's New", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: onSurface)),
                 const SizedBox(height: 6),
                 Text(
-                  'Protocol updates and important changes will appear here.',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.35,
-                  ),
+                  'Recent AHA changes are checked online and saved for offline viewing.',
+                  style: TextStyle(fontSize: 15, color: scheme.onSurfaceVariant, height: 1.35),
                 ),
+                if (_lastChecked != null) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    'Last checked: ${_formatDateTime(_lastChecked!)}',
+                    style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                  ),
+                ],
                 const SizedBox(height: 18),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 46,
-                          height: 46,
-                          decoration: BoxDecoration(
-                            color: primary.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.library_books_rounded,
-                            color: primary,
-                            size: 25,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Current Protocol Set',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                'Baxter Regional Medical Center Ambulance Protocols — 2021',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.3,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'This prototype is currently using the 2021 protocol set. When an approved protocol update is added, the changes can be listed here for quick review.',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                _sectionHeader(context, 'App Updates', Icons.system_update_rounded),
+                const SizedBox(height: 8),
+                if (_appUpdates.isEmpty)
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.info_outline_rounded, color: scheme.primary),
+                      title: const Text('No app updates loaded', style: TextStyle(fontWeight: FontWeight.w700)),
+                      subtitle: const Text('App feature changes are published with each updated build.'),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 12),
+                  )
+                else
+                  ..._appUpdates.map((update) => _AppUpdateCard(update: update)),
+                const SizedBox(height: 20),
+                _sectionHeader(context, 'AHA Updates', Icons.favorite_rounded),
+                const SizedBox(height: 8),
+                if (_loading && sourceUpdates.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (sourceUpdates.isEmpty)
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.cloud_off_rounded, color: scheme.primary),
+                      title: const Text('No AHA updates loaded', style: TextStyle(fontWeight: FontWeight.w700)),
+                      subtitle: const Text('Connect to the internet and tap refresh to check the AHA update feed.'),
+                    ),
+                  )
+                else
+                  ...sourceUpdates.map((update) => _UpdateCard(
+                        update: update,
+                        onTap: () => _openUpdate(update['url'] as String?),
+                      )),
+                if (_error != null) ...[
+                  const SizedBox(height: 8),
+                  Text(_error!, style: TextStyle(color: scheme.error, fontSize: 12)),
+                ],
+                const SizedBox(height: 20),
+                _sectionHeader(context, 'Current Protocol Set', Icons.library_books_rounded),
+                const SizedBox(height: 8),
                 Card(
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 6,
-                    ),
-                    leading: Icon(
-                      Icons.check_circle_outline_rounded,
-                      color: primary,
-                      size: 30,
-                    ),
-                    title: const Text(
-                      'No newer protocol updates loaded',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
+                    leading: Icon(Icons.verified_rounded, color: scheme.primary, size: 30),
+                    title: const Text('Baxter Regional Medical Center Ambulance Protocols — 2021', style: TextStyle(fontWeight: FontWeight.w700)),
                     subtitle: const Padding(
                       padding: EdgeInsets.only(top: 4),
-                      child: Text(
-                        'When a new approved protocol set is added, this section can highlight what changed and where to find it.',
-                      ),
+                      child: Text('No newer Baxter protocol set has been loaded into this app.'),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Prototype App Updates',
-                  style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const _WhatsNewFeature(
-                  icon: Icons.search_rounded,
-                  title: 'Live Protocol Search',
-                  description: 'Search suggestions appear as you type, with direct access to matching protocols.',
-                ),
-                const _WhatsNewFeature(
-                  icon: Icons.star_rounded,
-                  title: 'Favorites',
-                  description: 'Keep frequently used protocols one tap away.',
-                ),
-                const _WhatsNewFeature(
-                  icon: Icons.dark_mode_rounded,
-                  title: 'Dark Mode',
-                  description: 'Switch between light and dark themes from Settings.',
+                const SizedBox(height: 8),
+                Text(
+                  'App changes are generated from the project update feed whenever a new build is published.',
+                  style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant, height: 1.35),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(BuildContext context, String title, IconData icon) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Icon(icon, color: scheme.primary),
+        const SizedBox(width: 8),
+        Text(title, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800, color: scheme.onSurface)),
+      ],
+    );
+  }
+
+  String _formatDateTime(DateTime value) {
+    final local = value.toLocal();
+    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+    final minute = local.minute.toString().padLeft(2, '0');
+    final suffix = local.hour >= 12 ? 'PM' : 'AM';
+    return '${local.month}/${local.day}/${local.year} $hour:$minute $suffix';
+  }
+}
+
+class _AppUpdateCard extends StatelessWidget {
+  final Map<String, dynamic> update;
+
+  const _AppUpdateCard({required this.update});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final date = update['date'] as String? ?? '';
+    final title = update['title'] as String? ?? 'App Update';
+    final description = update['description'] as String? ?? '';
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(color: scheme.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
+              child: Icon(Icons.new_releases_rounded, color: scheme.primary),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+                  if (date.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(date, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.primary)),
+                  ],
+                  if (description.isNotEmpty) ...[
+                    const SizedBox(height: 5),
+                    Text(description, style: TextStyle(fontSize: 14, color: scheme.onSurfaceVariant, height: 1.35)),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UpdateCard extends StatelessWidget {
+  final Map<String, dynamic> update;
+  final VoidCallback onTap;
+
+  const _UpdateCard({required this.update, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final date = update['date'] as String? ?? '';
+    final title = update['title'] as String? ?? 'AHA Update';
+    final description = update['description'] as String? ?? '';
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: scheme.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: Icon(Icons.new_releases_rounded, color: scheme.primary),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+                    if (date.isNotEmpty) ...[
+                      const SizedBox(height: 3),
+                      Text(date, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.primary)),
+                    ],
+                    if (description.isNotEmpty) ...[
+                      const SizedBox(height: 5),
+                      Text(description, style: TextStyle(fontSize: 14, color: scheme.onSurfaceVariant, height: 1.35)),
+                    ],
+                    const SizedBox(height: 8),
+                    Text('Open official AHA update  ›', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: scheme.primary)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
