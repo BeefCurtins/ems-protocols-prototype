@@ -1,6 +1,11 @@
+# Baxter EMS Protocols Flutter App
 
-## What's New / App Updates
+Pediatric Emergency now includes a prototype clinical reference layer with:
+- length-based zone selection
+- cm/in and kg/lb inputs
+- measured-weight override
+- airway reference formulas
+- 2025 AHA PALS cardiac-arrest dose/energy references
+- pediatric medication/fluid references extracted from the loaded Baxter 2021 protocol set
 
-`lib/main.dart` reads `app_updates.json` at runtime and caches the last successful feed in SharedPreferences. The GitHub Pages build runs `tool/generate_app_updates.py` before building the web app, which starts with the curated `app_updates_seed.json` entries and adds recent Git commit subjects as app-change entries. This means future feature commits can automatically appear in What's New when the project is pushed and redeployed.
-
-For best results, use descriptive Git commit messages such as `Add pediatric airway tool` or `Update Transfer Protocol layout` instead of generic messages such as `Upload files`.
+Clinical values are labeled by source and should be verified against the current approved Baxter protocols and current AHA/PALS guidance before clinical use.

@@ -2,6 +2,20 @@
   {
     "source": "APP",
     "date": "September 5, 2026",
+    "title": "Medication Reference",
+    "description": "Added searchable medication lookup using FDA drug labeling, with expandable indications, warnings, contraindications, adverse reactions, dosing information, and interactions.",
+    "url": "https://www.fda.gov/drugs/drug-approvals-and-databases/about-drugsfda"
+  },
+  {
+    "source": "APP",
+    "date": "September 5, 2026",
+    "title": "Lab / Medical Reference",
+    "description": "Added a searchable at-a-glance reference for common adult laboratory values, organized by CBC, BMP/CMP, liver, coagulation, ABG, cardiac, and critical-care categories.",
+    "url": "https://www.merckmanuals.com/professional/resources/normal-laboratory-values/laboratory-reference-ranges"
+  },
+  {
+    "source": "APP",
+    "date": "September 5, 2026",
     "title": "Education Tabs",
     "description": "Updated Education with a Study the Current Protocol tab and a TLC tab that opens the HealthStream TLC login.",
     "url": "https://login.healthstream.com/hstmsts/MobileLogin.aspx"
