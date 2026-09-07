@@ -1,7 +1,7 @@
 name: ems_protocols
 description: EMS protocol reference app using native text only.
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ">=3.9.0 <4.0.0"
@@ -26,3 +26,8 @@ flutter:
   assets:
     - assets/baxter_wordmark.png
     - assets/baxter_mark.png
+    - assets/baxter_mark_dark.png
+    - assets/baxter_mark_ui.png
+    - assets/baxter_mark_white_blue.png
+    - assets/baxter_mark_light.png
+    - assets/baxter_header_logo.png
